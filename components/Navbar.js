@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import React from 'react'
 import { GiGuitarHead } from "react-icons/gi";
+import Button from './Button';
 
 const Navbar = () => {
   return (
@@ -16,11 +17,13 @@ const Navbar = () => {
           <li className='flex items-center justify-center cursor-pointer min-w-[120px] h-full hover:opacity-80'><Link href="/">ARTIST</Link></li>
           <li className='flex items-center justify-center cursor-pointer min-w-[120px] h-full hover:opacity-80'><Link href="/">LIBRARY</Link></li>
           <li className='flex items-center justify-center cursor-pointer min-w-[120px] h-full hover:opacity-80'><Link href="/">RECENT</Link></li>
+          <li className='flex items-center justify-center cursor-pointer min-w-[120px] h-full hover:opacity-80'><Link href="/">COMMUNITY</Link></li>
         </ul>
       </div>
 
-      <div className='mx-4'>
-        USER
+      <div className='flex'>
+        <Link href="/"><Button title="SIGN IN" /></Link>
+        <Link href="/"><Button title="SIGN UP" /></Link>
       </div>
     </nav>
   )
