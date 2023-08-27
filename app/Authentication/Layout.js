@@ -2,11 +2,8 @@ import React from 'react'
 
 const Layout = ({ children }) => {
   return (
-    <div>
-        <div>
-            layout
-            {children}
-        </div>
+    <div className="flex items-center justify-center w-full h-[100vh] bg-auth bg-center bg-cover">
+        {children}
     </div>
   )
 }

@@ -11,6 +11,10 @@ module.exports = {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
         'gradient-conic':
           'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
+        'auth': "url('/img/Authentication.jpg')",
+      },
+      colors: {
+        'foggy' : 'rgba(255, 255, 255, 0.9)'
       },
     },
   },
