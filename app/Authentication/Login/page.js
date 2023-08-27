@@ -3,7 +3,7 @@
 import React from 'react'
 import { AiOutlineUser } from "react-icons/ai";
 import { CgPassword } from "react-icons/cg";
-import { BiLogoGmail } from "react-icons/bi";
+import { FcGoogle } from "react-icons/fc";
 import { useState, useEffect } from 'react';
 import { signIn, getProviders } from 'next-auth/react'
 
@@ -13,7 +13,6 @@ const page = () => {
   useEffect(() => {
     const setUpProviders = async () => {
       const res = await getProviders()
-
       setProviders(res)
     }
 
@@ -52,7 +51,7 @@ const page = () => {
             })}
             className="flex items-center justify-center mt-4 w-full h-12 border-2 border-red-500 rounded-md p-4 hover:opacity-80"
           >
-            <p className="text-lg font-bold">Continue with Gmail <BiLogoGmail className="ml-4 text-red-600 inline-block text-3xl"/></p>
+            <p className="text-lg font-bold">Continue with Google <FcGoogle className="ml-4 inline-block text-3xl"/></p>
           </button>
         ))}
       </form>

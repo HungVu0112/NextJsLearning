@@ -3,6 +3,18 @@ import GoogleProvider from 'next-auth/providers/google';
 import User from '@/models/user';
 import { connectToDB } from '@/utils/database';
 
+const generateRandomString = (length) => {
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let result = '';
+
+  for (let i = 0; i < length; i++) {
+    const randomIndex = Math.floor(Math.random() * characters.length);
+    result += characters[randomIndex];
+  }
+
+  return result;
+}
+
 const handler = NextAuth({
   providers: [
     GoogleProvider({
@@ -30,6 +42,7 @@ const handler = NextAuth({
           await User.create({
             email: profile.email,
             username: profile.name.replace(/\s/g, "").toLowerCase(),
+            password: generateRandomString(20),
             image: profile.picture
           })
         }

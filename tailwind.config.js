@@ -16,6 +16,9 @@ module.exports = {
       colors: {
         'foggy' : 'rgba(255, 255, 255, 0.9)'
       },
+      dropShadow: {
+        'white' : '0 4px 3px rgb(255, 255, 255, 0.25)'
+      }
     },
   },
   plugins: [],
