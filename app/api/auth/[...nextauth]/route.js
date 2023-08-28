@@ -1,59 +1,41 @@
-import NextAuth from 'next-auth';
-import GoogleProvider from 'next-auth/providers/google';
-import User from '@/models/user';
-import { connectToDB } from '@/utils/database';
+import NextAuth from "next-auth/next";
+import GoogleProvider from 'next-auth/providers/google'
+import CredentialsProvider from "next-auth/providers/credentials";
+import { connectToDB } from "@/utils/database";
+import User from "@/models/user";
+import { compare } from "bcrypt";
 
-const generateRandomString = (length) => {
-  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  let result = '';
+const handler = NextAuth ({
+    providers: [
+        GoogleProvider({
+            clientId: process.env.GOOGLE_ID,
+            clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+        }),
+        CredentialsProvider({
+            name : "Credentials",
+            async authorize(credentials, req){
+                await connectToDB()
 
-  for (let i = 0; i < length; i++) {
-    const randomIndex = Math.floor(Math.random() * characters.length);
-    result += characters[randomIndex];
-  }
+                // check user existance
+                const result = await User.findOne({ email : credentials.email })
+                
+                if(!result){
+                    throw new Error("No user Found with Email Please Sign Up...!")
+                }
+        
+                // incorrect password
+                if(result.password !== credentials.password || result.email !== credentials.email){
+                    throw new Error("Username or Password doesn't match");
+                }
 
-  return result;
-}
-
-const handler = NextAuth({
-  providers: [
-    GoogleProvider({
-      clientId: process.env.GOOGLE_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    })
-  ],
-  callbacks: {
-    async session({ session }) {
-      // store the user id from MongoDB to session
-      const sessionUser = await User.findOne({ email: session.user.email });
-      session.user.id = sessionUser._id.toString();
-
-      return session;
-    },
-    async signIn({ account, profile, user, credentials }) {
-      try {
-        await connectToDB();
-
-        // check if user already exists
-        const userExists = await User.findOne({ email: profile.email });
-
-        // if not, create a new document and save user in MongoDB
-        if (!userExists) {
-          await User.create({
-            email: profile.email,
-            username: profile.name.replace(/\s/g, "").toLowerCase(),
-            password: generateRandomString(20),
-            image: profile.picture
-          })
-        }
-
-        return true
-      } catch (error) {
-        console.log("Error checking if user exists: ", error.message);
-        return false
-      }
-    },
-  }
+                return result;
+            }
+        })
+    ],
+    secret: process.env.NEXTAUTH_SECRET,
+    session: {
+        strategy: 'jwt',
+    }
 })
 
 export { handler as GET, handler as POST }

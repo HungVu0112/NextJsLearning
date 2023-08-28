@@ -1,62 +1,93 @@
 'use client'
 
+import Link from 'next/link'
 import React from 'react'
-import { AiOutlineUser } from "react-icons/ai";
-import { CgPassword } from "react-icons/cg";
+import { HiAtSymbol, HiFingerPrint } from 'react-icons/hi'
+import { useState } from 'react'
 import { FcGoogle } from "react-icons/fc";
-import { useState, useEffect } from 'react';
-import { signIn, getProviders } from 'next-auth/react'
+import { useSession, signIn } from 'next-auth/react'
+import { useFormik } from 'formik'
+import { loginValidate } from '@/lib/validate'
+import { useRouter } from 'next/navigation'
 
-const page = () => {
-  const [providers, setProviders] = useState(null)
+const Login = () => {
+  const router = useRouter()
+  const [show, setShow] = useState(false)
+  const formik = useFormik({
+    initialValues: {
+      email: '',
+      password: ''
+    },
+    validate: loginValidate,
+    onSubmit
+  })
 
-  useEffect(() => {
-    const setUpProviders = async () => {
-      const res = await getProviders()
-      setProviders(res)
-    }
+  async function onSubmit(values) {
+    signIn('credentials', {
+      email: values.email,
+      password: values.password,
+      callbackUrl: '/Content/Home'
+    })
+  }
 
-    setUpProviders()
-  }, [])
+  const handleGoogleSignin = async () => {
+    signIn('google', { callbackUrl: '/Content/Home' })
+  }
 
   return (
-    <div className="p-6 w-1/3 h-3/4 bg-foggy border-2 border-cyan-500 rounded-md text-slate-700">
-      <h1 className="mt-4 text-4xl text-center font-bold">LOGIN</h1>
-
-      <form className="mt-10">
-        <div className="mt-4">
-          <div>
-            <AiOutlineUser className="inline-block text-2xl mr-1" />
-            <label for="username" className="mr-3 font-bold text-base">Username</label>
-          </div>
-          <input type="text"  id="username" className="bg-transparent w-full mt-1 border-b-2 border-black outline-0 text-sm p-1" placeholder="Type your username ..." required autoComplete="off"/>
+    <>
+      <section className="w-3/4 mx-auto flex flex-col gap-10 text-gray-700">
+        <div className="title">
+          <h1 className="text-gray-800 text-4xl font-bold py-4">Sign in</h1>
         </div>
 
-        <div className="mt-4">
-          <div>
-            <CgPassword className="inline-block text-2xl mr-1" />
-            <label for="password" className="mr-3 font-bold text-base">Password</label>
+        <form className="flex flex-col gap-5" onSubmit={formik.handleSubmit}>
+          <div className={`flex border rounded-xl relative ${formik.errors.email && formik.touched.email ? 'border-rose-600' : ''}`}>
+            <input 
+              type='email'
+              name='email'
+              placeholder='Email'
+              autoComplete='off'
+              className="w-full py-4 px-6 border rounded-xl bg-slate-50 focus:outline-none border-none focus:text-[#6366f1]"
+              {...formik.getFieldProps('email')}
+            />
+            <span className="icon flex items-center px-4 text-[#6366f1]">
+              <HiAtSymbol size={25}/>
+            </span>
           </div>
-          <input type="password"  id="password" className="bg-transparent w-full mt-1 border-b-2 border-black outline-0 text-sm p-1" placeholder="Type your password ..." required/>
-        </div>
+          <div className={`flex border rounded-xl relative ${formik.errors.password && formik.touched.password ? 'border-rose-600' : ''}`}>
+            <input 
+              type={show ? 'text' : 'password'}
+              name='password'
+              placeholder='Password'
+              autoComplete='off'
+              className="w-full py-4 px-6 border rounded-xl bg-slate-50 focus:outline-none border-none focus:text-[#6366f1]"
+              {...formik.getFieldProps('password')}
+            />
+            <span className="icon flex items-center px-4 cursor-pointer text-[#6366f1] hover:opacity-80" onClick={() => setShow(!show)} >
+              <HiFingerPrint size={25}/>
+            </span>
+          </div>
 
-        <button type="submit" className="mt-8 text-white w-full h-12 rounded-md p-2 bg-slate-900 hover:opacity-80">Login</button>
+          <div className="input-button">
+            <button type='submit' className="w-full bg-gradient-to-r from-blue-500 to-indigo-500 rounded-md py-3 text-gray-50 text-lg hover:opacity-80">
+              Login
+            </button>
+          </div>
+          <div className="input-button">
+            <button type='button' onClick={handleGoogleSignin} className="flex items-center justify-center w-full border-2 border-stone-500 py-3 rounded-md hover:opacity-80">
+              <p className="mr-4">Sign in with Google</p>
+              <FcGoogle size={25} />
+            </button>
+          </div>
+        </form>
 
-        {providers && Object.values(providers).map((provider) => (
-          <button 
-            type='button'
-            key={provider.name}
-            onClick={() => signIn(provider.id, {
-              callbackUrl: '/Content/Home'
-            })}
-            className="flex items-center justify-center mt-4 w-full h-12 border-2 border-red-500 rounded-md p-4 hover:opacity-80"
-          >
-            <p className="text-lg font-bold">Continue with Google <FcGoogle className="ml-4 inline-block text-3xl"/></p>
-          </button>
-        ))}
-      </form>
-    </div>
+        <p className="mt-[-12px] text-center text-sm text-gray-400">
+          Don't have an account yet ? <Link href='/Authentication/Signup' className="text-blue-700">Signup</Link>
+        </p>
+      </section>
+    </>
   )
 }
 
-export default page
+export default Login
