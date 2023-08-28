@@ -5,7 +5,7 @@ import React from 'react'
 import { HiAtSymbol, HiFingerPrint } from 'react-icons/hi'
 import { useState } from 'react'
 import { FcGoogle } from "react-icons/fc";
-import { useSession, signIn } from 'next-auth/react'
+import { signIn } from 'next-auth/react'
 import { useFormik } from 'formik'
 import { loginValidate } from '@/lib/validate'
 import { useRouter } from 'next/navigation'
@@ -23,11 +23,18 @@ const Login = () => {
   })
 
   async function onSubmit(values) {
-    signIn('credentials', {
+    const checkLogin = await signIn('credentials', {
+      redirect: false,
       email: values.email,
       password: values.password,
       callbackUrl: '/Content/Home'
     })
+
+    if(checkLogin.error) {
+      alert(checkLogin.error)
+    } else {
+      router.push('/Content/Home')
+    }
   }
 
   const handleGoogleSignin = async () => {

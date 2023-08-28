@@ -21,9 +21,15 @@ const Navbar = () => {
           <li className='flex items-center justify-center cursor-pointer min-w-[120px] h-full hover:opacity-80'><Link href="/Content/Home">HOME</Link></li>
           <li className='flex items-center justify-center cursor-pointer min-w-[120px] h-full hover:opacity-80'><Link href="/">SEARCH</Link></li>
           <li className='flex items-center justify-center cursor-pointer min-w-[120px] h-full hover:opacity-80'><Link href="/">ARTIST</Link></li>
-          <li className='flex items-center justify-center cursor-pointer min-w-[120px] h-full hover:opacity-80'><Link href="/">LIBRARY</Link></li>
-          <li className='flex items-center justify-center cursor-pointer min-w-[120px] h-full hover:opacity-80'><Link href="/">RECENT</Link></li>
-          <li className='flex items-center justify-center cursor-pointer min-w-[120px] h-full hover:opacity-80'><Link href="/">COMMUNITY</Link></li>
+          <li className='flex items-center justify-center cursor-pointer min-w-[120px] h-full hover:opacity-80'><Link href="/">PLAYLIST</Link></li>
+
+          {session?.user ? (
+            <>
+              <li className='flex items-center justify-center cursor-pointer min-w-[120px] h-full hover:opacity-80'><Link href="/">LIBRARY</Link></li>
+              <li className='flex items-center justify-center cursor-pointer min-w-[120px] h-full hover:opacity-80'><Link href="/">COMMUNITY</Link></li>
+            </>
+          ) : ''
+        }
         </ul>
       </div>
 

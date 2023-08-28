@@ -11,7 +11,7 @@ export const POST = async (req) => {
         const checkUser = await User.findOne({ email })
 
         if(checkUser) {
-            return new Response("Account already exists!", { status: 201 })
+            return new Response("Account already exists! Please try again!", { status: 201 })
         } else {
             await User.create({
                 username,

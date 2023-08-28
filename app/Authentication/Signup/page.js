@@ -8,6 +8,7 @@ import { FcGoogle } from "react-icons/fc";
 import { useFormik } from 'formik'
 import { signupValidate } from '@/lib/validate'
 import { useRouter } from 'next/navigation'
+import { signIn } from 'next-auth/react'
 
 const Signup = () => {
   const router = useRouter()
@@ -31,11 +32,21 @@ const Signup = () => {
       })
 
       if(res.ok) {
-        router.push('/Authentication/Login')
+        const mes = await res.text()
+
+        if(mes !== "Successfully created!") {
+          alert(mes)
+        } else {
+          router.push('/Authentication/Login')
+        }
       }
     } catch (err) {
       console.log(err)
     }
+  }
+
+  const handleGoogleSignin = async () => {
+    signIn('google', { callbackUrl: '/Content/Home' })
   }
 
   return (
@@ -105,7 +116,7 @@ const Signup = () => {
             </button>
           </div>
           <div className="input-button">
-            <button type='button' className="flex items-center justify-center w-full border-2 border-stone-500 py-1 rounded-md hover:opacity-80">
+            <button type='button' onClick={handleGoogleSignin} className="flex items-center justify-center w-full border-2 border-stone-500 py-1 rounded-md hover:opacity-80">
               <p className="mr-4">Sign in with Google</p>
               <FcGoogle size={20} />
             </button>

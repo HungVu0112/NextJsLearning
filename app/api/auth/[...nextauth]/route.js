@@ -22,7 +22,7 @@ const handler = NextAuth ({
                 if(!result){
                     throw new Error("No user Found with Email Please Sign Up...!")
                 }
-        
+         
                 // incorrect password
                 if(result.password !== credentials.password || result.email !== credentials.email){
                     throw new Error("Username or Password doesn't match");
